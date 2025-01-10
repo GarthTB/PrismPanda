@@ -63,12 +63,13 @@
                         Value="0" HorizontalAlignment="Stretch" ValueChanged="Ch3Sli_OnValueChanged" />
             </Grid>
             <Grid ColumnDefinitions="68,8,30,8,*">
-                <Button x:Name="SaveBtn" Grid.Column="0" Content="Save" HorizontalContentAlignment="Center"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <Button x:Name="SaveBtn" Grid.Column="0" Content="Save" Click="SaveBtn_OnClick"
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 <Label Grid.Column="2" Content="as" HorizontalContentAlignment="Center"
                        VerticalContentAlignment="Center" />
-                <ComboBox x:Name="FormatCombo" Grid.Column="4" SelectedIndex="0" HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch" VerticalContentAlignment="Bottom">
+                <ComboBox x:Name="FormatCombo" Grid.Column="4" SelectedIndex="0"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Bottom"
+                          SelectionChanged="FormatCombo_OnSelectionChanged">
                     <ComboBoxItem Content="TIFF" />
                     <ComboBoxItem Content="WebP" />
                     <ComboBoxItem Content="JPEG" />

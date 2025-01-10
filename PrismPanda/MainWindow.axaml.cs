@@ -20,10 +20,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        ImgBox.Source = _processedThumbnail;
+        ImgBox.Source = _processedPreview;
     }
 
-    private Bitmap? _processedThumbnail = null;
+    private Bitmap? _processedPreview = null;
 
     private async void Mw_OnKeyDown(object? sender, KeyEventArgs e)
     {
@@ -78,6 +78,9 @@ public partial class MainWindow : Window
         };
     }
 
+    private void FormatCombo_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) =>
+        ImageManager.FormatIndex = FormatCombo.SelectedIndex;
+
     private void Ch1Reset_OnClick(object? sender, RoutedEventArgs e) => Ch1TxB.Text = "0.000";
 
     private void Ch2Reset_OnClick(object? sender, RoutedEventArgs e) => Ch2TxB.Text = "0.000";
@@ -87,19 +90,19 @@ public partial class MainWindow : Window
     private void Ch1Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
         Ch1TxB.Text = e.NewValue.ToString("0.000");
-        ProcessThumbnail();
+        ProcessPreview();
     }
 
     private void Ch2Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
         Ch2TxB.Text = e.NewValue.ToString("0.000");
-        ProcessThumbnail();
+        ProcessPreview();
     }
 
     private void Ch3Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
         Ch3TxB.Text = e.NewValue.ToString("0.000");
-        ProcessThumbnail();
+        ProcessPreview();
     }
 
     private void Ch1TxB_OnTextChanged(object? sender, TextChangedEventArgs e)
@@ -137,6 +140,8 @@ public partial class MainWindow : Window
 
     #endregion
 
+    #region File-Related Logic
+
     private async void OpenBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         try
@@ -148,8 +153,7 @@ public partial class MainWindow : Window
                     AllowMultiple = false,
                     FileTypeFilter = [FilePickerFileTypes.ImageAll, FilePickerFileTypes.All]
                 });
-            if (files.Count == 0) return;
-            if (await ImageManager.SetImage(files[0].Path.AbsolutePath))
+            if (files.Count > 0 && await ImageManager.SetImage(files[0]))
                 Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
         }
         catch (Exception)
@@ -157,5 +161,37 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ProcessThumbnail() { }
+    private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (ImageManager.File is null)
+                _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No image loaded.").ShowAsync();
+            else if (Ch1Sli.Value == 0 && Ch2Sli.Value == 0 && Ch3Sli.Value == 0)
+                _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No changes made to the image.")
+                    .ShowAsync();
+            else
+            {
+                var file = await StorageProvider.SaveFilePickerAsync(
+                    new FilePickerSaveOptions
+                    {
+                        Title = "Save the Image as...",
+                        ShowOverwritePrompt = true,
+                        DefaultExtension = ImageManager.Extension,
+                        SuggestedFileName = $"PrismPanda_{ImageManager.BareFilename}",
+                        SuggestedStartLocation = await ImageManager.File.GetParentAsync()
+                    });
+                if (file is not null && await ImageManager.SaveImage(file, FormatCombo.SelectedIndex))
+                    _ = await MessageBoxManager.GetMessageBoxStandard("Success", "Image saved successfully.")
+                        .ShowAsync();
+            }
+        }
+        catch (Exception)
+        { // ignored
+        }
+    }
+
+    #endregion
+
+    private void ProcessPreview() { }
 }

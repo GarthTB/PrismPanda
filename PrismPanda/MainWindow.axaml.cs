@@ -5,7 +5,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
+using PrismPanda.Core;
+using Window = Avalonia.Controls.Window;
 
 namespace PrismPanda;
 
@@ -13,7 +17,13 @@ public partial class MainWindow : Window
 {
     #region Initialize and About
 
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+        ImgBox.Source = _processedThumbnail;
+    }
+
+    private Bitmap? _processedThumbnail = null;
 
     private async void Mw_OnKeyDown(object? sender, KeyEventArgs e)
     {
@@ -74,14 +84,23 @@ public partial class MainWindow : Window
 
     private void Ch3Reset_OnClick(object? sender, RoutedEventArgs e) => Ch3TxB.Text = "0.000";
 
-    private void Ch1Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e) =>
+    private void Ch1Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
         Ch1TxB.Text = e.NewValue.ToString("0.000");
+        ProcessThumbnail();
+    }
 
-    private void Ch2Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e) =>
+    private void Ch2Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
         Ch2TxB.Text = e.NewValue.ToString("0.000");
+        ProcessThumbnail();
+    }
 
-    private void Ch3Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e) =>
+    private void Ch3Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
         Ch3TxB.Text = e.NewValue.ToString("0.000");
+        ProcessThumbnail();
+    }
 
     private void Ch1TxB_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
@@ -117,4 +136,26 @@ public partial class MainWindow : Window
     }
 
     #endregion
+
+    private async void OpenBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var files = await StorageProvider.OpenFilePickerAsync(
+                new FilePickerOpenOptions
+                {
+                    Title = "Open One Image",
+                    AllowMultiple = false,
+                    FileTypeFilter = [FilePickerFileTypes.ImageAll, FilePickerFileTypes.All]
+                });
+            if (files.Count == 0) return;
+            if (await ImageManager.SetImage(files[0].Path.AbsolutePath))
+                Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
+        }
+        catch (Exception)
+        { // ignored
+        }
+    }
+
+    private void ProcessThumbnail() { }
 }

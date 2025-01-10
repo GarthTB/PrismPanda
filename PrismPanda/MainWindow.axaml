@@ -2,10 +2,75 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        Width="800"
-        Height="450"
+        mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="400"
+        Width="720"
+        Height="400"
+        FontSize="16"
         x:Class="PrismPanda.MainWindow"
         Title="PrismPanda">
-    Welcome to Avalonia!
+    <Grid ColumnDefinitions="*,16,256,18" RowDefinitions="*,360,*">
+        <Grid Column="0" Row="0" RowSpan="3">
+            <Image x:Name="Img" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        </Grid>
+        <StackPanel Grid.Column="2" Grid.Row="1" Spacing="6">
+            <Grid ColumnDefinitions="68,16,*" RowDefinitions="*,16">
+                <Button x:Name="OpenBtn" Grid.Column="0" Grid.Row="0" Content="Open"
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <ComboBox x:Name="ColorSpaceCombo" Grid.Column="2" Grid.Row="0" SelectedIndex="0"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Bottom">
+                    <ComboBoxItem Content="HSL (RGB)" />
+                    <ComboBoxItem Content="HSV (RGB)" />
+                    <ComboBoxItem Content="HSI (RGB)" />
+                    <ComboBoxItem Content="TSL (RGB)" />
+                    <ComboBoxItem Content="LCh (CIELab)" />
+                    <ComboBoxItem Content="LCh (CIELuv)" />
+                    <ComboBoxItem Content="HSL (CIELuv)" />
+                    <ComboBoxItem Content="JzCzHz" />
+                    <ComboBoxItem Content="Oklch" />
+                    <ComboBoxItem Content="Okhsv" />
+                    <ComboBoxItem Content="Okhsl" />
+                    <ComboBoxItem Content="CAM02-UCS" />
+                    <ComboBoxItem Content="CAM16-UCS" />
+                    <ComboBoxItem Content="HCT" />
+                </ComboBox>
+            </Grid>
+            <Grid ColumnDefinitions="*,16,72,16,68" RowDefinitions="*,*">
+                <Label Grid.Column="0" Grid.Row="0" Content="Hue" VerticalAlignment="Center" />
+                <TextBox x:Name="Ch1TxB" Grid.Column="2" Grid.Row="0" Text="0.000" HorizontalAlignment="Stretch" />
+                <Button x:Name="Ch1Reset" Grid.Column="4" Grid.Row="0" Content="Reset"
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+                <Slider x:Name="Ch1Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="-1" Maximum="1"
+                        Value="0" HorizontalAlignment="Stretch" />
+            </Grid>
+            <Grid ColumnDefinitions="*,16,72,16,68" RowDefinitions="*,*">
+                <Label Grid.Column="0" Grid.Row="0" Content="Saturation" VerticalAlignment="Center" />
+                <TextBox x:Name="Ch2TxB" Grid.Column="2" Grid.Row="0" Text="0.000" HorizontalAlignment="Stretch" />
+                <Button x:Name="Ch2Reset" Grid.Column="4" Grid.Row="0" Content="Reset"
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+                <Slider x:Name="Ch2Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="-1" Maximum="1"
+                        Value="0" HorizontalAlignment="Stretch" />
+            </Grid>
+            <Grid ColumnDefinitions="*,16,72,16,68" RowDefinitions="*,*">
+                <Label Grid.Column="0" Grid.Row="0" Content="Lightness" VerticalAlignment="Center" />
+                <TextBox x:Name="Ch3TxB" Grid.Column="2" Grid.Row="0" Text="0.000" HorizontalAlignment="Stretch" />
+                <Button x:Name="Ch3Reset" Grid.Column="4" Grid.Row="0" Content="Reset"
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+                <Slider x:Name="Ch3Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="-1" Maximum="1"
+                        Value="0" HorizontalAlignment="Stretch" />
+            </Grid>
+            <Grid ColumnDefinitions="68,10,30,10,*">
+                <Button x:Name="SaveBtn" Grid.Column="0" Content="Save" HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <Label Grid.Column="2" Content="as" HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center" />
+                <ComboBox x:Name="FormatCombo" Grid.Column="4" SelectedIndex="0" HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch" VerticalContentAlignment="Bottom">
+                    <ComboBoxItem Content="TIFF" />
+                    <ComboBoxItem Content="WebP" />
+                    <ComboBoxItem Content="JPEG" />
+                    <ComboBoxItem Content="PNG" />
+                </ComboBox>
+            </Grid>
+        </StackPanel>
+    </Grid>
 </Window>

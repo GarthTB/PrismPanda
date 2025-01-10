@@ -17,10 +17,10 @@ public static class ImageManager
     public static string Extension =>
         FormatIndex switch
         {
-            0 => ".tif",
-            1 => ".webp",
-            2 => ".jpg",
-            _ => ".png"
+            0 => "tif",
+            1 => "webp",
+            2 => "jpg",
+            _ => "png"
         };
 
     public static string BareFilename => File?.Name[..File.Name.LastIndexOf('.')] ?? "";
@@ -30,8 +30,13 @@ public static class ImageManager
         try
         {
             File = file;
-            _image = new Mat(file.Path.AbsolutePath, ImreadModes.Unchanged);
-            _thumbnail = _image.Resize(new Size(512, 512), 0, 0, InterpolationFlags.Lanczos4);
+            new Mat(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth)
+                .CvtColor(ColorConversionCodes.BGR2XYZ)
+                .ConvertTo(_image, MatType.CV_32FC3);
+            new Mat(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth)
+                .Resize(new Size(512, 512), 0, 0, InterpolationFlags.Lanczos4)
+                .CvtColor(ColorConversionCodes.BGR2XYZ)
+                .ConvertTo(_thumbnail, MatType.CV_32FC3);
             return true;
         }
         catch (Exception ex)
@@ -45,7 +50,7 @@ public static class ImageManager
         }
     }
 
-    public static async Task<bool> SaveImage(IStorageFile file, int formatIndex)
+    public static async Task<bool> AdjustAndSaveImage(IStorageFile file)
     {
         try
         {

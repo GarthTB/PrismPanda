@@ -78,8 +78,10 @@ public partial class MainWindow : Window
         };
     }
 
-    private void FormatCombo_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) =>
-        ImageManager.FormatIndex = FormatCombo.SelectedIndex;
+    private void FormatCombo_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (FormatCombo is not null) ImageManager.FormatIndex = FormatCombo.SelectedIndex;
+    }
 
     private void Ch1Reset_OnClick(object? sender, RoutedEventArgs e) => Ch1TxB.Text = "0.000";
 
@@ -181,7 +183,7 @@ public partial class MainWindow : Window
                         SuggestedFileName = $"PrismPanda_{ImageManager.BareFilename}",
                         SuggestedStartLocation = await ImageManager.File.GetParentAsync()
                     });
-                if (file is not null && await ImageManager.SaveImage(file, FormatCombo.SelectedIndex))
+                if (file is not null && await ImageManager.AdjustAndSaveImage(file))
                     _ = await MessageBoxManager.GetMessageBoxStandard("Success", "Image saved successfully.")
                         .ShowAsync();
             }

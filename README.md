@@ -28,6 +28,6 @@ Adjusting colour components of an image in various colour spaces (simply multipl
 
 ## Changelog 更新日志
 
-- [1.0.0] - 20250112
+### [1.0.0] - 20250112
 
 - First release.

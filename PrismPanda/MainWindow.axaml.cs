@@ -105,8 +105,9 @@ public partial class MainWindow : Window
     {
         try
         {
-            ImgBox.Source = await ImageManager.GeneratePreview(
-                ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value);
+            if (ImageManager.File is not null)
+                ImgBox.Source = await ImageManager.GeneratePreview(
+                    ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value);
         }
         catch (Exception)
         { // ignored

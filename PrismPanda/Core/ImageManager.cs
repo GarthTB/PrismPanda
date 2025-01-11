@@ -14,7 +14,7 @@ public static class ImageManager
 {
     private static Mat _image = new(), _thumbnail = new();
 
-    private static Mat? _outputTemp;
+    private static Mat? _resultTemp;
 
     public static IStorageFile? File { get; private set; }
 
@@ -57,7 +57,7 @@ public static class ImageManager
                 .ShowAsync();
             return false;
         }
-        finally { _outputTemp = null; }
+        finally { _resultTemp = null; }
     }
 
     public static async Task<Bitmap?> GeneratePreview(
@@ -85,7 +85,7 @@ public static class ImageManager
                 .ShowAsync();
             return null;
         }
-        finally { _outputTemp = null; }
+        finally { _resultTemp = null; }
     }
 
     public static async Task<bool> AdjustAndSaveImage(
@@ -93,24 +93,27 @@ public static class ImageManager
     {
         try
         {
-            _outputTemp ??= _image.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain)
+            _resultTemp ??= _image.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain)
                 .CvtColor(ColorConversionCodes.XYZ2BGR);
+            Mat outputMat = new();
             switch (formatIndex)
             {
                 case 0: // TIFF (lossless, 16-bit)
-                    _outputTemp.ConvertTo(_outputTemp, MatType.CV_16UC3);
-                    return _outputTemp.SaveImage(
+                    var multiplier = new Mat(_resultTemp.Size(), _resultTemp.Type(), new Scalar(256, 256, 256, 256));
+                    Cv2.Multiply(_resultTemp, multiplier, outputMat);
+                    outputMat.ConvertTo(outputMat, MatType.CV_16UC3);
+                    return outputMat.SaveImage(
                         file.Path.AbsolutePath, new ImageEncodingParam(ImwriteFlags.TiffCompression, 32946));
                 case 1: // WebP (lossless, 8-bit, max quality)
-                    _outputTemp.ConvertTo(_outputTemp, MatType.CV_8UC3);
-                    return _outputTemp.SaveImage(file.Path.AbsolutePath);
+                    _resultTemp.ConvertTo(outputMat, MatType.CV_8UC3);
+                    return outputMat.SaveImage(file.Path.AbsolutePath);
                 case 2: // JPEG (lossy, 8-bit, max quality)
-                    _outputTemp.ConvertTo(_outputTemp, MatType.CV_8UC3);
-                    return _outputTemp.SaveImage(
+                    _resultTemp.ConvertTo(outputMat, MatType.CV_8UC3);
+                    return outputMat.SaveImage(
                         file.Path.AbsolutePath, new ImageEncodingParam(ImwriteFlags.JpegQuality, 100));
                 default: // PNG (lossless, 8-bit)
-                    _outputTemp.ConvertTo(_outputTemp, MatType.CV_8UC3);
-                    return _outputTemp.SaveImage(
+                    _resultTemp.ConvertTo(outputMat, MatType.CV_8UC3);
+                    return outputMat.SaveImage(
                         file.Path.AbsolutePath, new ImageEncodingParam(ImwriteFlags.PngCompression, 9));
             }
         }

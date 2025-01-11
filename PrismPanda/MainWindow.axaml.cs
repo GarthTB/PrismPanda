@@ -17,13 +17,7 @@ public partial class MainWindow : Window
 {
     #region Initialize and About
 
-    public MainWindow()
-    {
-        InitializeComponent();
-        ImgBox.Source = _processedPreview;
-    }
-
-    private Bitmap? _processedPreview = null;
+    public MainWindow() => InitializeComponent();
 
     private async void Mw_OnKeyDown(object? sender, KeyEventArgs e)
     {
@@ -107,6 +101,18 @@ public partial class MainWindow : Window
         ProcessPreview();
     }
 
+    private async void ProcessPreview()
+    {
+        try
+        {
+            ImgBox.Source = _processedPreview = await ImageManager.GeneratePreview(
+                ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value);
+        }
+        catch (Exception)
+        { // ignored
+        }
+    }
+
     private void Ch1TxB_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         if (!double.TryParse(Ch1TxB.Text, out var value)) Ch1TxB.Text = "0.000";
@@ -144,6 +150,8 @@ public partial class MainWindow : Window
 
     #region File-Related Logic
 
+    private Bitmap? _processedPreview;
+
     private async void OpenBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         try
@@ -155,8 +163,9 @@ public partial class MainWindow : Window
                     AllowMultiple = false,
                     FileTypeFilter = [FilePickerFileTypes.ImageAll, FilePickerFileTypes.All]
                 });
-            if (files.Count > 0 && await ImageManager.SetImage(files[0]))
-                Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
+            if (files.Count <= 0 || !await ImageManager.SetImage(files[0])) return;
+            Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
+            ImgBox.Source = _processedPreview = await ImageManager.GeneratePreview(-1);
         }
         catch (Exception)
         { // ignored
@@ -168,7 +177,8 @@ public partial class MainWindow : Window
         try
         {
             if (ImageManager.File is null)
-                _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No image loaded.").ShowAsync();
+                _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No image is currently loaded.")
+                    .ShowAsync();
             else if (Ch1Sli.Value == 0 && Ch2Sli.Value == 0 && Ch3Sli.Value == 0)
                 _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No changes made to the image.")
                     .ShowAsync();
@@ -183,7 +193,10 @@ public partial class MainWindow : Window
                         SuggestedFileName = $"PrismPanda_{ImageManager.BareFilename}",
                         SuggestedStartLocation = await ImageManager.File.GetParentAsync()
                     });
-                if (file is not null && await ImageManager.AdjustAndSaveImage(file))
+                if (file is not null
+                 && await ImageManager.AdjustAndSaveImage(
+                        file, ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value,
+                        FormatCombo.SelectedIndex))
                     _ = await MessageBoxManager.GetMessageBoxStandard("Success", "Image saved successfully.")
                         .ShowAsync();
             }
@@ -194,6 +207,4 @@ public partial class MainWindow : Window
     }
 
     #endregion
-
-    private void ProcessPreview() { }
 }

@@ -70,10 +70,10 @@
                 <ComboBox x:Name="FormatCombo" Grid.Column="4" SelectedIndex="0"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Bottom"
                           SelectionChanged="FormatCombo_OnSelectionChanged">
-                    <ComboBoxItem Content="TIFF" />
-                    <ComboBoxItem Content="WebP" />
-                    <ComboBoxItem Content="JPEG" />
-                    <ComboBoxItem Content="PNG" />
+                    <ComboBoxItem Content="TIFF (lossless, 16-bit)" />
+                    <ComboBoxItem Content="WebP (lossless, 8-bit)" />
+                    <ComboBoxItem Content="JPEG (lossy, 8-bit, max quality)" />
+                    <ComboBoxItem Content="PNG (lossless, 8-bit)" />
                 </ComboBox>
             </Grid>
         </StackPanel>

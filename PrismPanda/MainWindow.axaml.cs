@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
 using PrismPanda.Core;
@@ -36,10 +35,11 @@ public partial class MainWindow : Window
         _ = await MessageBoxManager.GetMessageBoxStandard(
                 "About",
                 "Welcome to PrismPanda!\n"
-              + "Split an image into different channels and easily adjust them\n"
-              + "using sliders or numerical values! When the value is 1, it reaches\n"
-              + "the maximum value of the channel, and when it's -1, it reaches\n"
-              + "the minimum value of the channel. 0 does nothing.\n"
+              + "Split the image into three channels in different color spaces,\n"
+              + "and easily adjust the values of each channel with sliders or numbers.\n"
+              + "When the gain is 0, the pixel values remain unchanged.\n"
+              + "When the gain is 1, the pixel values are doubled.\n"
+              + "When the gain is -1, the pixel value is 0.\n"
               + "See README for details.\n"
               + $"Version: {version}\n"
               + "Copyright \u00a9 GarthTB 2025. All rights reserved.")
@@ -105,7 +105,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            ImgBox.Source = _processedPreview = await ImageManager.GeneratePreview(
+            ImgBox.Source = await ImageManager.GeneratePreview(
                 ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value);
         }
         catch (Exception)
@@ -150,8 +150,6 @@ public partial class MainWindow : Window
 
     #region File-Related Logic
 
-    private Bitmap? _processedPreview;
-
     private async void OpenBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         try
@@ -165,7 +163,7 @@ public partial class MainWindow : Window
                 });
             if (files.Count <= 0 || !await ImageManager.SetImage(files[0])) return;
             Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
-            ImgBox.Source = _processedPreview = await ImageManager.GeneratePreview(-1);
+            ImgBox.Source = await ImageManager.GeneratePreview(-1);
         }
         catch (Exception)
         { // ignored
@@ -193,12 +191,12 @@ public partial class MainWindow : Window
                         SuggestedFileName = $"PrismPanda_{ImageManager.BareFilename}",
                         SuggestedStartLocation = await ImageManager.File.GetParentAsync()
                     });
-                if (file is not null
-                 && await ImageManager.AdjustAndSaveImage(
-                        file, ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value,
-                        FormatCombo.SelectedIndex))
-                    _ = await MessageBoxManager.GetMessageBoxStandard("Success", "Image saved successfully.")
-                        .ShowAsync();
+                if (file is null) return;
+                _ = await ImageManager.AdjustAndSaveImage(
+                    file, ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value,
+                    FormatCombo.SelectedIndex)
+                    ? await MessageBoxManager.GetMessageBoxStandard("Success", "Image saved successfully.").ShowAsync()
+                    : await MessageBoxManager.GetMessageBoxStandard("Error", "Failed to save the image.").ShowAsync();
             }
         }
         catch (Exception)

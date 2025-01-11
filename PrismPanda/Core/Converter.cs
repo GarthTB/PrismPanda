@@ -26,49 +26,25 @@ public static class Converter
     }
 
     private static Unicolour ConvertAndGain(
-        this Unicolour colour, int colorSpaceId, double ch1Gain, double ch2Gain, double ch3Gain) =>
-        colorSpaceId switch
+        this Unicolour ori, int colorSpaceId, double ch1Gain, double ch2Gain, double ch3Gain)
+    {
+        return colorSpaceId switch
         {
-            0 => new Unicolour(
-                ColourSpace.Hsl, colour.Hsl.H.Gain(ch1Gain, 360), colour.Hsl.S.Gain(ch2Gain, 1),
-                colour.Hsl.L.Gain(ch3Gain, 1)),
-            1 => new Unicolour(
-                ColourSpace.Hsb, colour.Hsb.H.Gain(ch1Gain, 360), colour.Hsb.S.Gain(ch2Gain, 1),
-                colour.Hsb.B.Gain(ch3Gain, 1)),
-            2 => new Unicolour(
-                ColourSpace.Hsi, colour.Hsi.H.Gain(ch1Gain, 360), colour.Hsi.S.Gain(ch2Gain, 1),
-                colour.Hsi.I.Gain(ch3Gain, 1)),
-            3 => new Unicolour(
-                ColourSpace.Tsl, colour.Tsl.T.Gain(ch1Gain, 360), colour.Tsl.S.Gain(ch2Gain, 1),
-                colour.Tsl.L.Gain(ch3Gain, 1)),
-            4 => new Unicolour(
-                ColourSpace.Lchab, colour.Lchab.L.Gain(ch1Gain, 100), colour.Lchab.C.Gain(ch2Gain, 100),
-                colour.Lchab.H.Gain(ch3Gain, 360)),
-            5 => new Unicolour(
-                ColourSpace.Lchuv, colour.Lchuv.L.Gain(ch1Gain, 100), colour.Lchuv.C.Gain(ch2Gain, 150),
-                colour.Lchuv.H.Gain(ch3Gain, 360)),
-            6 => new Unicolour(
-                ColourSpace.Hsluv, colour.Hsluv.H.Gain(ch1Gain, 360), colour.Hsluv.S.Gain(ch2Gain, 1),
-                colour.Hsluv.L.Gain(ch3Gain, 1)),
-            7 => new Unicolour(
-                ColourSpace.Jzczhz, colour.Jzczhz.J.Gain(ch1Gain, 1), colour.Jzczhz.C.Gain(ch2Gain, 1),
-                colour.Jzczhz.H.Gain(ch3Gain, 360)),
-            8 => new Unicolour(
-                ColourSpace.Oklch, colour.Oklch.L.Gain(ch1Gain, 1), colour.Oklch.C.Gain(ch2Gain, 0.37),
-                colour.Oklch.H.Gain(ch3Gain, 360)),
-            9 => new Unicolour(
-                ColourSpace.Okhsv, colour.Okhsv.H.Gain(ch1Gain, 360), colour.Okhsv.S.Gain(ch2Gain, 1),
-                colour.Okhsv.V.Gain(ch3Gain, 1)),
-            10 => new Unicolour(
-                ColourSpace.Okhsl, colour.Okhsl.H.Gain(ch1Gain, 360), colour.Okhsl.S.Gain(ch2Gain, 1),
-                colour.Okhsl.L.Gain(ch3Gain, 1)),
-            _ => new Unicolour(
-                ColourSpace.Hct, colour.Hct.H.Gain(ch1Gain, 360), colour.Hct.C.Gain(ch2Gain, 100),
-                colour.Hct.T.Gain(ch3Gain, 100))
+            0 => new Unicolour(ColourSpace.Hsl, Gain1(ori.Hsl.H), Gain2(ori.Hsl.S), Gain3(ori.Hsl.L)),
+            1 => new Unicolour(ColourSpace.Hsb, Gain1(ori.Hsb.H), Gain2(ori.Hsb.S), Gain3(ori.Hsb.B)),
+            2 => new Unicolour(ColourSpace.Hsi, Gain1(ori.Hsi.H), Gain2(ori.Hsi.S), Gain3(ori.Hsi.I)),
+            3 => new Unicolour(ColourSpace.Tsl, Gain1(ori.Tsl.T), Gain2(ori.Tsl.S), Gain3(ori.Tsl.L)),
+            4 => new Unicolour(ColourSpace.Lchab, Gain1(ori.Lchab.L), Gain2(ori.Lchab.C), Gain3(ori.Lchab.H)),
+            5 => new Unicolour(ColourSpace.Lchuv, Gain1(ori.Lchuv.L), Gain2(ori.Lchuv.C), Gain3(ori.Lchuv.H)),
+            6 => new Unicolour(ColourSpace.Hsluv, Gain1(ori.Hsluv.H), Gain2(ori.Hsluv.S), Gain3(ori.Hsluv.L)),
+            7 => new Unicolour(ColourSpace.Jzczhz, Gain1(ori.Jzczhz.J), Gain2(ori.Jzczhz.C), Gain3(ori.Jzczhz.H)),
+            8 => new Unicolour(ColourSpace.Oklch, Gain1(ori.Oklch.L), Gain2(ori.Oklch.C), Gain3(ori.Oklch.H)),
+            9 => new Unicolour(ColourSpace.Okhsv, Gain1(ori.Okhsv.H), Gain2(ori.Okhsv.S), Gain3(ori.Okhsv.V)),
+            10 => new Unicolour(ColourSpace.Okhsl, Gain1(ori.Okhsl.H), Gain2(ori.Okhsl.S), Gain3(ori.Okhsl.L)),
+            _ => new Unicolour(ColourSpace.Hct, Gain1(ori.Hct.H), Gain2(ori.Hct.C), Gain3(ori.Hct.T))
         };
-
-    private static double Gain(this double value, double gain, double max) =>
-        gain > 0
-            ? value + gain * (max - value)
-            : (1 + gain) * value;
+        double Gain1(double x) => (1 + ch1Gain) * x;
+        double Gain2(double x) => (1 + ch2Gain) * x;
+        double Gain3(double x) => (1 + ch3Gain) * x;
+    }
 }

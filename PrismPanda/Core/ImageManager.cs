@@ -36,16 +36,15 @@ public static class ImageManager
         try
         {
             File = file;
-            new Mat(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth)
-                .CvtColor(ColorConversionCodes.BGR2XYZ)
-                .ConvertTo(_image, MatType.CV_32FC3);
-            var size = _image is { Width: <= 512, Height: <= 512 } ? new Size(_image.Width, _image.Height) :
-                _image.Width > _image.Height ? new Size(512, 512 * _image.Height / _image.Width) :
-                new Size(512 * _image.Width / _image.Height, 512);
-            new Mat(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth)
-                .Resize(size, 0, 0, InterpolationFlags.Lanczos4)
-                .CvtColor(ColorConversionCodes.BGR2XYZ)
-                .ConvertTo(_thumbnail, MatType.CV_32FC3);
+            Mat image = new(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth);
+            var thumbnail = image.Clone();
+            if (image.Width * image.Height > 256000)
+            {
+                var scale = Math.Sqrt(256000.0 / (image.Width * image.Height));
+                thumbnail = thumbnail.Resize(new Size(0, 0), scale, scale, InterpolationFlags.Lanczos4);
+            }
+            image.CvtColor(ColorConversionCodes.BGR2XYZ).ConvertTo(_image, MatType.CV_32FC3);
+            thumbnail.CvtColor(ColorConversionCodes.BGR2XYZ).ConvertTo(_thumbnail, MatType.CV_32FC3);
             return true;
         }
         catch (Exception ex)

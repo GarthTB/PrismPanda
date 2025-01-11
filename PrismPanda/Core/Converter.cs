@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using OpenCvSharp;
+﻿using OpenCvSharp;
 using Wacton.Unicolour;
 
 namespace PrismPanda.Core;
@@ -8,21 +7,24 @@ public static class Converter
 {
     public static Mat SplitGains(this Mat image, int colorSpaceId, double ch1Gain, double ch2Gain, double ch3Gain)
     {
-        var result = image.Clone();
-        Parallel.For(
-            0, image.Rows, i =>
-            {
-                for (var j = 0; j < image.Cols; j++)
+        var processedImage = image.Clone();
+        unsafe
+        {
+            processedImage.ForEachAsVec3f(
+                (value, position) =>
                 {
-                    var pxValue = image.At<Vec3f>(i, j);
-                    var (x, y, z) = (pxValue.Item0, pxValue.Item1, pxValue.Item2);
-                    var (ch1, ch2, ch3) = new Unicolour(ColourSpace.Xyz, x, y, z) // now in XYZ color space
+                    var ch1 = value->Item0;
+                    var ch2 = value->Item1;
+                    var ch3 = value->Item2;
+                    var result = new Unicolour(ColourSpace.Xyz, ch1, ch2, ch3) // now in XYZ color space
                         .ConvertAndGain(colorSpaceId, ch1Gain, ch2Gain, ch3Gain) // convert color space and gains
                         .Xyz.Triplet; // convert back to XYZ and get the components
-                    result.Set(i, j, new Vec3f((float)ch1, (float)ch2, (float)ch3));
-                }
-            });
-        return result;
+                    value->Item0 = (float)result.First;
+                    value->Item1 = (float)result.Second;
+                    value->Item2 = (float)result.Third;
+                });
+        }
+        return processedImage;
     }
 
     private static Unicolour ConvertAndGain(

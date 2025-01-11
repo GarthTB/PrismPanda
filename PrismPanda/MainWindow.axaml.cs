@@ -36,10 +36,9 @@ public partial class MainWindow : Window
                 "About",
                 "Welcome to PrismPanda!\n"
               + "Split the image into three channels in different color spaces,\n"
-              + "and easily adjust the values of each channel with sliders or numbers.\n"
-              + "When the gain is 0, the pixel values remain unchanged.\n"
-              + "When the gain is 1, the pixel values are doubled.\n"
-              + "When the gain is -1, the pixel value is 0.\n"
+              + "and easily multiply the values of each channel with sliders or numbers.\n"
+              + "When the gain is 2, the pixel value doubles.\n"
+              + "When the gain is 0, the pixel value is 0.\n"
               + "See README for details.\n"
               + $"Version: {version}\n"
               + "Copyright \u00a9 GarthTB 2025. All rights reserved.")

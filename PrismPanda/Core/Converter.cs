@@ -11,7 +11,7 @@ public static class Converter
         unsafe
         {
             processedImage.ForEachAsVec3f(
-                (value, position) =>
+                (value, _) =>
                 {
                     var ch1 = value->Item0;
                     var ch2 = value->Item1;

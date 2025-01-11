@@ -30,21 +30,21 @@ public static class Converter
     {
         return colorSpaceId switch
         {
-            0 => new Unicolour(ColourSpace.Hsl, Gain1(ori.Hsl.H), Gain2(ori.Hsl.S), Gain3(ori.Hsl.L)),
-            1 => new Unicolour(ColourSpace.Hsb, Gain1(ori.Hsb.H), Gain2(ori.Hsb.S), Gain3(ori.Hsb.B)),
-            2 => new Unicolour(ColourSpace.Hsi, Gain1(ori.Hsi.H), Gain2(ori.Hsi.S), Gain3(ori.Hsi.I)),
-            3 => new Unicolour(ColourSpace.Tsl, Gain1(ori.Tsl.T), Gain2(ori.Tsl.S), Gain3(ori.Tsl.L)),
-            4 => new Unicolour(ColourSpace.Lchab, Gain1(ori.Lchab.L), Gain2(ori.Lchab.C), Gain3(ori.Lchab.H)),
-            5 => new Unicolour(ColourSpace.Lchuv, Gain1(ori.Lchuv.L), Gain2(ori.Lchuv.C), Gain3(ori.Lchuv.H)),
-            6 => new Unicolour(ColourSpace.Hsluv, Gain1(ori.Hsluv.H), Gain2(ori.Hsluv.S), Gain3(ori.Hsluv.L)),
-            7 => new Unicolour(ColourSpace.Jzczhz, Gain1(ori.Jzczhz.J), Gain2(ori.Jzczhz.C), Gain3(ori.Jzczhz.H)),
-            8 => new Unicolour(ColourSpace.Oklch, Gain1(ori.Oklch.L), Gain2(ori.Oklch.C), Gain3(ori.Oklch.H)),
-            9 => new Unicolour(ColourSpace.Okhsv, Gain1(ori.Okhsv.H), Gain2(ori.Okhsv.S), Gain3(ori.Okhsv.V)),
-            10 => new Unicolour(ColourSpace.Okhsl, Gain1(ori.Okhsl.H), Gain2(ori.Okhsl.S), Gain3(ori.Okhsl.L)),
-            _ => new Unicolour(ColourSpace.Hct, Gain1(ori.Hct.H), Gain2(ori.Hct.C), Gain3(ori.Hct.T))
+            0 => Gain(ColourSpace.Hsl, ori.Hsl.Triplet),
+            1 => Gain(ColourSpace.Hsb, ori.Hsb.Triplet),
+            2 => Gain(ColourSpace.Hsi, ori.Hsi.Triplet),
+            3 => Gain(ColourSpace.Tsl, ori.Tsl.Triplet),
+            4 => Gain(ColourSpace.Lchab, ori.Lchab.Triplet),
+            5 => Gain(ColourSpace.Lchuv, ori.Lchuv.Triplet),
+            6 => Gain(ColourSpace.Hsluv, ori.Hsluv.Triplet),
+            7 => Gain(ColourSpace.Jzczhz, ori.Jzczhz.Triplet),
+            8 => Gain(ColourSpace.Oklch, ori.Oklch.Triplet),
+            9 => Gain(ColourSpace.Okhsv, ori.Okhsv.Triplet),
+            10 => Gain(ColourSpace.Okhsl, ori.Okhsl.Triplet),
+            _ => Gain(ColourSpace.Hct, ori.Hct.Triplet)
         };
-        double Gain1(double x) => (1 + ch1Gain) * x;
-        double Gain2(double x) => (1 + ch2Gain) * x;
-        double Gain3(double x) => (1 + ch3Gain) * x;
+
+        Unicolour Gain(ColourSpace colorSpace, ColourTriplet triplet) =>
+            new(colorSpace, ch1Gain * triplet.First, ch2Gain * triplet.Second, ch3Gain * triplet.Third);
     }
 }

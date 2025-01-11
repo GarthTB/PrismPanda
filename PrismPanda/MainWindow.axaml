@@ -10,7 +10,7 @@
         x:Name="Mw"
         Title="PrismPanda"
         KeyDown="Mw_OnKeyDown">
-    <Grid ColumnDefinitions="*,16,256,18" RowDefinitions="*,360,*">
+    <Grid ColumnDefinitions="*,16,256,16" RowDefinitions="*,360,*">
         <Grid Column="0" Row="0" RowSpan="3">
             <Image x:Name="ImgBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Grid>
@@ -37,29 +37,29 @@
             </Grid>
             <Grid ColumnDefinitions="*,16,72,16,68" RowDefinitions="*,*">
                 <Label x:Name="Ch1Name" Grid.Column="0" Grid.Row="0" Content="Hue" VerticalAlignment="Center" />
-                <TextBox x:Name="Ch1TxB" Grid.Column="2" Grid.Row="0" Text="0.000" MaxLength="6"
+                <TextBox x:Name="Ch1TxB" Grid.Column="2" Grid.Row="0" Text="1.000" MaxLength="6"
                          HorizontalAlignment="Stretch" TextChanged="Ch1TxB_OnTextChanged" />
                 <Button x:Name="Ch1Reset" Grid.Column="4" Grid.Row="0" Content="Reset" Click="Ch1Reset_OnClick"
                         HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
-                <Slider x:Name="Ch1Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="-1" Maximum="1"
+                <Slider x:Name="Ch1Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="0" Maximum="3"
                         Value="0" HorizontalAlignment="Stretch" ValueChanged="Ch1Sli_OnValueChanged" />
             </Grid>
             <Grid ColumnDefinitions="*,16,72,16,68" RowDefinitions="*,*">
                 <Label x:Name="Ch2Name" Grid.Column="0" Grid.Row="0" Content="Saturation" VerticalAlignment="Center" />
-                <TextBox x:Name="Ch2TxB" Grid.Column="2" Grid.Row="0" Text="0.000" MaxLength="6"
+                <TextBox x:Name="Ch2TxB" Grid.Column="2" Grid.Row="0" Text="1.000" MaxLength="6"
                          HorizontalAlignment="Stretch" TextChanged="Ch2TxB_OnTextChanged" />
                 <Button x:Name="Ch2Reset" Grid.Column="4" Grid.Row="0" Content="Reset" Click="Ch2Reset_OnClick"
                         HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
-                <Slider x:Name="Ch2Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="-1" Maximum="1"
+                <Slider x:Name="Ch2Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="0" Maximum="3"
                         Value="0" HorizontalAlignment="Stretch" ValueChanged="Ch2Sli_OnValueChanged" />
             </Grid>
             <Grid ColumnDefinitions="*,16,72,16,68" RowDefinitions="*,*">
                 <Label x:Name="Ch3Name" Grid.Column="0" Grid.Row="0" Content="Lightness" VerticalAlignment="Center" />
-                <TextBox x:Name="Ch3TxB" Grid.Column="2" Grid.Row="0" Text="0.000" MaxLength="6"
+                <TextBox x:Name="Ch3TxB" Grid.Column="2" Grid.Row="0" Text="1.000" MaxLength="6"
                          HorizontalAlignment="Stretch" TextChanged="Ch3TxB_OnTextChanged" />
                 <Button x:Name="Ch3Reset" Grid.Column="4" Grid.Row="0" Content="Reset" Click="Ch3Reset_OnClick"
                         HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
-                <Slider x:Name="Ch3Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="-1" Maximum="1"
+                <Slider x:Name="Ch3Sli" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1" Minimum="0" Maximum="3"
                         Value="0" HorizontalAlignment="Stretch" ValueChanged="Ch3Sli_OnValueChanged" />
             </Grid>
             <Grid ColumnDefinitions="68,8,30,8,*">

@@ -61,12 +61,12 @@ public static class ImageManager
     }
 
     public static async Task<Bitmap?> GeneratePreview(
-        int colorSpaceId, double ch1Gain = 0, double ch2Gain = 0, double ch3Gain = 0)
+        int colorSpaceId, double ch1Gain = 1, double ch2Gain = 1, double ch3Gain = 1)
     {
         try
         {
             var eightBit = _thumbnail.Clone();
-            if (colorSpaceId == -1 || (ch1Gain == 0 && ch2Gain == 0 && ch3Gain == 0))
+            if (colorSpaceId == -1 || (ch1Gain == 1 && ch2Gain == 1 && ch3Gain == 1))
                 _thumbnail.CvtColor(ColorConversionCodes.XYZ2BGR).ConvertTo(eightBit, MatType.CV_8UC3);
             else
                 _thumbnail.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain)

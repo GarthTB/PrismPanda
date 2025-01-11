@@ -54,7 +54,7 @@ public partial class MainWindow : Window
     {
         if (Ch1TxB is null || Ch2TxB is null || Ch3TxB is null || Ch1Name is null || Ch2Name is null || Ch3Name is null)
             return;
-        Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
+        Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "1.000";
         (Ch1Name.Content, Ch2Name.Content, Ch3Name.Content) = ColorSpaceCombo.SelectedIndex switch
         {
             0 => ("Hue", "Saturation", "Lightness"),
@@ -77,11 +77,11 @@ public partial class MainWindow : Window
         if (FormatCombo is not null) ImageManager.FormatIndex = FormatCombo.SelectedIndex;
     }
 
-    private void Ch1Reset_OnClick(object? sender, RoutedEventArgs e) => Ch1TxB.Text = "0.000";
+    private void Ch1Reset_OnClick(object? sender, RoutedEventArgs e) => Ch1TxB.Text = "1.000";
 
-    private void Ch2Reset_OnClick(object? sender, RoutedEventArgs e) => Ch2TxB.Text = "0.000";
+    private void Ch2Reset_OnClick(object? sender, RoutedEventArgs e) => Ch2TxB.Text = "1.000";
 
-    private void Ch3Reset_OnClick(object? sender, RoutedEventArgs e) => Ch3TxB.Text = "0.000";
+    private void Ch3Reset_OnClick(object? sender, RoutedEventArgs e) => Ch3TxB.Text = "1.000";
 
     private void Ch1Sli_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
@@ -115,33 +115,33 @@ public partial class MainWindow : Window
 
     private void Ch1TxB_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (!double.TryParse(Ch1TxB.Text, out var value)) Ch1TxB.Text = "0.000";
+        if (!double.TryParse(Ch1TxB.Text, out var value)) Ch1TxB.Text = "1.000";
         switch (value)
         {
-            case < -1: Ch1TxB.Text = "-1.000"; break;
-            case > 1: Ch1TxB.Text = "1.000"; break;
+            case < 0: Ch1TxB.Text = "0.000"; break;
+            case > 3: Ch1TxB.Text = "3.000"; break;
             default: Ch1Sli.Value = value; break;
         }
     }
 
     private void Ch2TxB_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (!double.TryParse(Ch2TxB.Text, out var value)) Ch2TxB.Text = "0.000";
+        if (!double.TryParse(Ch2TxB.Text, out var value)) Ch2TxB.Text = "1.000";
         switch (value)
         {
-            case < -1: Ch2TxB.Text = "-1.000"; break;
-            case > 1: Ch2TxB.Text = "1.000"; break;
+            case < 0: Ch2TxB.Text = "0.000"; break;
+            case > 3: Ch2TxB.Text = "3.000"; break;
             default: Ch2Sli.Value = value; break;
         }
     }
 
     private void Ch3TxB_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (!double.TryParse(Ch3TxB.Text, out var value)) Ch3TxB.Text = "0.000";
+        if (!double.TryParse(Ch3TxB.Text, out var value)) Ch3TxB.Text = "1.000";
         switch (value)
         {
-            case < -1: Ch3TxB.Text = "-1.000"; break;
-            case > 1: Ch3TxB.Text = "1.000"; break;
+            case < 0: Ch3TxB.Text = "0.000"; break;
+            case > 3: Ch3TxB.Text = "3.000"; break;
             default: Ch3Sli.Value = value; break;
         }
     }
@@ -162,7 +162,7 @@ public partial class MainWindow : Window
                     FileTypeFilter = [FilePickerFileTypes.ImageAll, FilePickerFileTypes.All]
                 });
             if (files.Count <= 0 || !await ImageManager.SetImage(files[0])) return;
-            Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "0.000";
+            Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "1.000";
             ImgBox.Source = await ImageManager.GeneratePreview(-1);
         }
         catch (Exception)
@@ -177,7 +177,7 @@ public partial class MainWindow : Window
             if (ImageManager.File is null)
                 _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No image is currently loaded.")
                     .ShowAsync();
-            else if (Ch1Sli.Value == 0 && Ch2Sli.Value == 0 && Ch3Sli.Value == 0)
+            else if (Ch1Sli.Value == 1 && Ch2Sli.Value == 1 && Ch3Sli.Value == 1)
                 _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No changes made to the image.")
                     .ShowAsync();
             else

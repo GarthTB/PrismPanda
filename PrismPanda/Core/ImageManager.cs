@@ -36,15 +36,15 @@ public static class ImageManager
         try
         {
             File = file;
-            Mat image = new(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth);
-            var thumbnail = image.Clone();
-            if (image.Width * image.Height > 256000)
-            {
-                var scale = Math.Sqrt(256000.0 / (image.Width * image.Height));
-                thumbnail = thumbnail.Resize(new Size(0, 0), scale, scale, InterpolationFlags.Lanczos4);
-            }
-            image.CvtColor(ColorConversionCodes.BGR2XYZ).ConvertTo(_image, MatType.CV_32FC3);
-            thumbnail.CvtColor(ColorConversionCodes.BGR2XYZ).ConvertTo(_thumbnail, MatType.CV_32FC3);
+            new Mat(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth).ConvertTo(
+                _image, MatType.CV_32FC3); // original image
+
+            var scale = Math.Sqrt(250000.0 / (_image.Width * _image.Height));
+            _thumbnail = (_image.Width * _image.Height > 250000
+                ? _image.Resize(new Size(0, 0), scale, scale, InterpolationFlags.Lanczos4)
+                : _image.Clone()).CvtColor(ColorConversionCodes.BGR2XYZ);
+
+            _image = _image.CvtColor(ColorConversionCodes.BGR2XYZ);
             return true;
         }
         catch (Exception ex)
@@ -64,13 +64,10 @@ public static class ImageManager
     {
         try
         {
-            var eightBit = _thumbnail.Clone();
-            if (colorSpaceId == -1 || (ch1Gain == 1 && ch2Gain == 1 && ch3Gain == 1))
-                _thumbnail.CvtColor(ColorConversionCodes.XYZ2BGR).ConvertTo(eightBit, MatType.CV_8UC3);
-            else
-                _thumbnail.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain)
-                    .CvtColor(ColorConversionCodes.XYZ2BGR)
-                    .ConvertTo(eightBit, MatType.CV_8UC3);
+            var eightBit = colorSpaceId == -1 || (ch1Gain == 1 && ch2Gain == 1 && ch3Gain == 1)
+                ? _thumbnail.CvtColor(ColorConversionCodes.XYZ2BGR)
+                : _thumbnail.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain).CvtColor(ColorConversionCodes.XYZ2BGR);
+            eightBit.ConvertTo(eightBit, MatType.CV_8UC3);
             var bitmap = eightBit.ToBitmap(PixelFormat.Format24bppRgb);
             using MemoryStream memoryStream = new();
             bitmap.Save(memoryStream, ImageFormat.Png);

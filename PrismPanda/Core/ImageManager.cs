@@ -16,11 +16,14 @@ public static class ImageManager
 
     private static Mat? _resultTemp;
 
-    public static IStorageFile? File { get; private set; }
+    private static IStorageFile? _file;
+
+    public static Task<IStorageFolder?> Folder =>
+        _file?.GetParentAsync() ?? throw new InvalidOperationException("Cannot get parent folder of the image.");
 
     public static int FormatIndex { private get; set; }
 
-    public static string BareFilename => File?.Name[..File.Name.LastIndexOf('.')] ?? "";
+    public static string BareFilename => _file?.Name[.._file.Name.LastIndexOf('.')] ?? "";
 
     public static string Extension =>
         FormatIndex switch
@@ -35,8 +38,8 @@ public static class ImageManager
     {
         try
         {
-            File = file;
-            new Mat(file.Path.AbsolutePath, ImreadModes.Color | ImreadModes.AnyDepth).ConvertTo(
+            _file = file;
+            new Mat(file.Path.AbsolutePath, ImreadModes.Unchanged).ConvertTo(
                 _image, MatType.CV_32FC3); // original image
 
             var scale = Math.Sqrt(250000.0 / (_image.Width * _image.Height));
@@ -49,7 +52,7 @@ public static class ImageManager
         }
         catch (Exception ex)
         {
-            File = null;
+            _file = null;
             _image = _thumbnail = new Mat();
             _ = await MessageBoxManager.GetMessageBoxStandard(
                     "Error", $"An error occurred while opening the image: {ex.Message}")
@@ -60,10 +63,11 @@ public static class ImageManager
     }
 
     public static async Task<Bitmap?> GeneratePreview(
-        int colorSpaceId, double ch1Gain = 1, double ch2Gain = 1, double ch3Gain = 1)
+        int colorSpaceId = -1, double ch1Gain = 1, double ch2Gain = 1, double ch3Gain = 1)
     {
         try
         {
+            if (_file is null) return null;
             var eightBit = colorSpaceId == -1 || (ch1Gain == 1 && ch2Gain == 1 && ch3Gain == 1)
                 ? _thumbnail.CvtColor(ColorConversionCodes.XYZ2BGR)
                 : _thumbnail.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain).CvtColor(ColorConversionCodes.XYZ2BGR);
@@ -89,6 +93,7 @@ public static class ImageManager
     {
         try
         {
+            if (_file is null) throw new InvalidOperationException("No image is currently loaded.");
             _resultTemp ??= _image.SplitGains(colorSpaceId, ch1Gain, ch2Gain, ch3Gain)
                 .CvtColor(ColorConversionCodes.XYZ2BGR);
             Mat outputMat = new();

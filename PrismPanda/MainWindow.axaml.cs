@@ -104,9 +104,8 @@ public partial class MainWindow : Window
     {
         try
         {
-            if (ImageManager.File is not null)
-                ImgBox.Source = await ImageManager.GeneratePreview(
-                    ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value);
+            ImgBox.Source = await ImageManager.GeneratePreview(
+                ColorSpaceCombo.SelectedIndex, Ch1Sli.Value, Ch2Sli.Value, Ch3Sli.Value);
         }
         catch (Exception)
         { // ignored
@@ -163,7 +162,7 @@ public partial class MainWindow : Window
                 });
             if (files.Count <= 0 || !await ImageManager.SetImage(files[0])) return;
             Ch1TxB.Text = Ch2TxB.Text = Ch3TxB.Text = "1.000";
-            ImgBox.Source = await ImageManager.GeneratePreview(-1);
+            ImgBox.Source = await ImageManager.GeneratePreview();
         }
         catch (Exception)
         { // ignored
@@ -174,10 +173,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            if (ImageManager.File is null)
-                _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No image is currently loaded.")
-                    .ShowAsync();
-            else if (Ch1Sli.Value == 1 && Ch2Sli.Value == 1 && Ch3Sli.Value == 1)
+            if (Ch1Sli.Value == 1 && Ch2Sli.Value == 1 && Ch3Sli.Value == 1)
                 _ = await MessageBoxManager.GetMessageBoxStandard("Warning", "No changes made to the image.")
                     .ShowAsync();
             else
@@ -189,7 +185,7 @@ public partial class MainWindow : Window
                         ShowOverwritePrompt = true,
                         DefaultExtension = ImageManager.Extension,
                         SuggestedFileName = $"PrismPanda_{ImageManager.BareFilename}",
-                        SuggestedStartLocation = await ImageManager.File.GetParentAsync()
+                        SuggestedStartLocation = await ImageManager.Folder
                     });
                 if (file is null) return;
                 _ = await ImageManager.AdjustAndSaveImage(

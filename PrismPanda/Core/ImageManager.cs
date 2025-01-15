@@ -44,7 +44,7 @@ public static class ImageManager
 
             var scale = Math.Sqrt(250000.0 / (_image.Width * _image.Height));
             _thumbnail = (_image.Width * _image.Height > 250000
-                ? _image.Resize(new Size(0, 0), scale, scale, InterpolationFlags.Lanczos4)
+                ? _image.Resize(new Size(0, 0), scale, scale, InterpolationFlags.Area)
                 : _image.Clone()).CvtColor(ColorConversionCodes.BGR2XYZ);
 
             _image = _image.CvtColor(ColorConversionCodes.BGR2XYZ);

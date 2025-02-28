@@ -29,10 +29,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Assets\favicon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -46,10 +42,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Assets\icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

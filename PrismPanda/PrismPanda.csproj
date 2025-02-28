@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4" Version="4.10.0.20241108" />
+    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.10.0.20241108" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20241108" />
     <PackageReference Include="Wacton.Unicolour" Version="5.0.0" />
   </ItemGroup>

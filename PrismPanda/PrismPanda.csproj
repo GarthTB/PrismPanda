@@ -10,7 +10,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <PackageId>PrismPanda</PackageId>
     <Title>PrismPanda</Title>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>GarthTB</Authors>
     <Company>GarthTB</Company>
     <Product>PrismPanda</Product>
@@ -19,8 +19,8 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/GarthTB/PrismPanda</RepositoryUrl>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
-    <FileVersion>1.1.0</FileVersion>
+    <AssemblyVersion>1.1.1</AssemblyVersion>
+    <FileVersion>1.1.1</FileVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
